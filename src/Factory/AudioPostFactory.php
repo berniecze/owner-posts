@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Factory;
 
 use App\Entity\AudioPost;
+use App\Entity\Post;
 use App\Entity\User;
 use App\Enum\PostTypeEnum;
 use Doctrine\ORM\EntityManagerInterface;
@@ -19,16 +20,22 @@ readonly class AudioPostFactory
 
     public function create(User $user, string $title, int $duration, string $audioUrl, string $perex): void
     {
-        $post = new AudioPost();
+        $post = new Post();
         $post->setUser($user);
         $post->setTitle($title);
         $post->setPerex($perex);
-        $post->setDuration($duration);
-        $post->setFileUrl($audioUrl);
         $post->setPublicationDate($this->dateTimeFactory->nowImmutable());
         $post->setType(PostTypeEnum::AUDIO->value);
-
         $this->entityManager->persist($post);
+        $this->entityManager->flush();
+
+        $audioPost = new AudioPost();
+        $audioPost->setDuration($duration);
+        $audioPost->setFileUrl($audioUrl);
+
+        $post->setAudioPost($audioPost);
+        $this->entityManager->persist($post);
+        $this->entityManager->persist($audioPost);
         $this->entityManager->flush();
     }
 }

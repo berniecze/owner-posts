@@ -20,16 +20,16 @@ class PostsTransformer
     {
         $audio = null;
         $text = null;
-        if ($post->getAudio() !== null) {
+        if ($post->getAudioPost() !== null) {
             $audio = new \App\Domain\Post\AudioPost(
-                $post->getAudio()->getAudioUrl(),
-                $post->getAudio()->getLength()
+                $post->getAudioPost()->getFileUrl(),
+                $post->getAudioPost()->getDuration()
             );
         }
 
-        if ($post->getText() !== null) {
+        if ($post->getTextPost() !== null) {
             $audio = new \App\Domain\Post\TextPost(
-                $post->getText()->getText(),
+                $post->getTextPost()->getText(),
             );
         }
         return new \App\Domain\Post\Post(

@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Entity()
  * @ORM\Table(name="audio_posts")
  */
-class AudioPost extends Post
+class AudioPost
 {
     /**
      * @ORM\Column(type="integer")
@@ -19,6 +19,9 @@ class AudioPost extends Post
      * @ORM\Column(type="string", length=255)
      */
     private $fileUrl;
+
+    #[ORM\OneToOne(targetEntity: Post::class, mappedBy: 'audioPost')]
+    private Post $post;
 
     // Getters and setters
     public function getDuration(): ?int
@@ -41,5 +44,15 @@ class AudioPost extends Post
     {
         $this->fileUrl = $fileUrl;
         return $this;
+    }
+
+    public function getPost(): Post
+    {
+        return $this->post;
+    }
+
+    public function setPost(Post $post): void
+    {
+        $this->post = $post;
     }
 }

@@ -8,11 +8,8 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * @ORM\Entity()
  * @ORM\Table(name="posts")
- * @ORM\InheritanceType("JOINED")
- * @ORM\DiscriminatorColumn(name="type", type="string")
- * @ORM\DiscriminatorMap({"text" = "TextPost", "audio" = "AudioPost"})
  */
-abstract class Post
+class Post
 {
     /**
      * @ORM\Id()
@@ -45,7 +42,15 @@ abstract class Post
     /**
      * @ORM\Column(type="string")
      */
-    protected $type;
+    private $type;
+
+    #[ORM\OneToOne(targetEntity: TextPost::class, inversedBy: 'post')]
+    #[ORM\JoinColumn(name: 'text_post_id', referencedColumnName: 'id')]
+    private TextPost|null $textPost = null;
+
+    #[ORM\OneToOne(targetEntity: AudioPost::class, inversedBy: 'post')]
+    #[ORM\JoinColumn(name: 'audio_post_id', referencedColumnName: 'id')]
+    private AudioPost|null $audioPost = null;
 
     // Getters and setters
     public function getId(): ?int
@@ -106,5 +111,25 @@ abstract class Post
     {
         $this->type = $type;
         return $this;
+    }
+
+    public function getTextPost(): ?TextPost
+    {
+        return $this->textPost;
+    }
+
+    public function setTextPost(?TextPost $textPost): void
+    {
+        $this->textPost = $textPost;
+    }
+
+    public function getAudioPost(): ?AudioPost
+    {
+        return $this->audioPost;
+    }
+
+    public function setAudioPost(?AudioPost $audioPost): void
+    {
+        $this->audioPost = $audioPost;
     }
 }
